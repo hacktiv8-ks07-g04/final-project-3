@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hacktiv8-ks07-g04/final-project-3/config"
+	"github.com/hacktiv8-ks07-g04/final-project-3/infra/config"
 	"github.com/hacktiv8-ks07-g04/final-project-3/infra/database"
 )
 

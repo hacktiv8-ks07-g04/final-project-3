@@ -6,7 +6,7 @@ import (
 
 	"fmt"
 
-	"github.com/hacktiv8-ks07-g04/final-project-3/config"
+	"github.com/hacktiv8-ks07-g04/final-project-3/infra/config"
 	"github.com/hacktiv8-ks07-g04/final-project-3/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
