@@ -34,5 +34,5 @@ func ConnectDB() {
 		panic("failed to connect database")
 	}
 
-	db.Debug().AutoMigrate(entity.User{})
+	db.Debug().AutoMigrate(entity.User{}, entity.Category{}, entity.Task{})
 }
