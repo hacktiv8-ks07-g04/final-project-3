@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/hacktiv8-ks07-g04/final-project-3/pkg/errs"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -17,15 +18,17 @@ type User struct {
 	UpdatedAt time.Time
 }
 
-func (u *User) HashPassword() string {
+func (u *User) HashPassword() errs.MessageErr {
 	salt := 8
 
-	bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), salt)
+	bs, err := bcrypt.GenerateFromPassword([]byte(u.Password), salt)
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
+		return errs.NewInternalServerError("Error hashing password")
 	}
 
-	return string(bytes)
+	u.Password = string(bs)
+	return nil
 }
 
 func (u *User) ComparePassword(password string) bool {
