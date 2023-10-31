@@ -22,3 +22,14 @@ type RegisterResponse struct {
 	Message    string           `json:"message"`
 	Data       UserDataResponse `json:"data"`
 }
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	StatusCode int              `json:"status"`
+	Message    string           `json:"message"`
+	Data       UserDataResponse `json:"data"`
+}
