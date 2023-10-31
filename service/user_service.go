@@ -19,6 +19,8 @@ func NewUserService(userRepo user_repository.Repository) UserService {
 }
 
 func (s *userService) RegisterNewUser(user entity.User) (*dto.RegisterResponse, error) {
+	user.Password = user.HashPassword()
+
 	user, err := s.userRepo.RegisterNewUser(user)
 	if err != nil {
 		return nil, err
@@ -28,7 +30,7 @@ func (s *userService) RegisterNewUser(user entity.User) (*dto.RegisterResponse, 
 		StatusCode: 200,
 		Message:    "Successfully registered new user",
 		Data: dto.UserDataResponse{
-			ID:        int(user.UserID),
+			UserID:    user.UserID,
 			FullName:  user.FullName,
 			Email:     user.Email,
 			CreatedAt: user.CreatedAt,
