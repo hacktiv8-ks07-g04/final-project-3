@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Task struct {
-	ID          uint       `gorm:"primaryKey;not null"`
+	TaskID          uint       `gorm:"primaryKey;not null"`
 	Title       string     `gorm:"type:varchar(255);not null"`
 	Description string     `gorm:"type:varchar(255);not null"`
 	Status      bool       `gorm:"type:boolean;not null"`
