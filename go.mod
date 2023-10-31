@@ -3,6 +3,7 @@ module github.com/hacktiv8-ks07-g04/final-project-3
 go 1.21.2
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
 	gorm.io/driver/postgres v1.5.4
