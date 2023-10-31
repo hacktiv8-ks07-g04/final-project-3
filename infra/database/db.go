@@ -5,9 +5,10 @@ import (
 	// "log"
 
 	"fmt"
+	"log"
 
-	"github.com/hacktiv8-ks07-g04/final-project-3/infra/config"
 	"github.com/hacktiv8-ks07-g04/final-project-3/entity"
+	"github.com/hacktiv8-ks07-g04/final-project-3/infra/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -33,6 +34,20 @@ func ConnectDB() {
 	if err != nil {
 		panic("failed to connect database")
 	}
+}
 
-	db.Debug().AutoMigrate(entity.User{}, entity.Category{}, entity.Task{})
+func Migration() {
+	db.AutoMigrate(entity.User{})
+}
+
+func GetDbInstance() *gorm.DB {
+	if db == nil {
+		log.Fatal("Database Instance is not initialized")
+	}
+	return db
+}
+
+func InitializedDatabase() {
+	ConnectDB()
+	Migration()
 }
