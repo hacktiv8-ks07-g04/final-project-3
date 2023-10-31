@@ -15,6 +15,10 @@ type appConfig struct {
 	DBPort     string
 }
 
+type serverConfig struct {
+	Port string
+}
+
 func LoadAppConfig() {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -30,5 +34,11 @@ func GetConfig() appConfig {
 		DBUser:     os.Getenv("DB_USER"),
 		DBPassword: os.Getenv("DB_PASSWORD"),
 		DBName:     os.Getenv("DB_NAME"),
+	}
+}
+
+func Server() serverConfig {
+	return serverConfig{
+		Port: os.Getenv("PORT"),
 	}
 }
