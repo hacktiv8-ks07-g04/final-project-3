@@ -1,6 +1,8 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type RegisterRequest struct {
 	FullName string `json:"full_name"`
@@ -9,7 +11,7 @@ type RegisterRequest struct {
 }
 
 type UserDataResponse struct {
-	ID        int       `json:"id"`
+	UserID    uint      `json:"id"`
 	FullName  string    `json:"full_name"`
 	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"created_at"`
