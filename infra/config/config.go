@@ -8,11 +8,12 @@ import (
 )
 
 type appConfig struct {
-	DBHost     string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	DBPort     string
+	DBHost       string
+	DBUser       string
+	DBPassword   string
+	DBName       string
+	DBPort       string
+	JWTSecretKey string
 }
 
 type serverConfig struct {
@@ -34,6 +35,7 @@ func GetConfig() appConfig {
 		DBUser:     os.Getenv("DB_USER"),
 		DBPassword: os.Getenv("DB_PASSWORD"),
 		DBName:     os.Getenv("DB_NAME"),
+		JWTSecretKey: os.Getenv("JWT_SECRET_KEY"),
 	}
 }
 
