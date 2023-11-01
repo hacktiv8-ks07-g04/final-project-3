@@ -25,7 +25,6 @@ func NewUserService(userRepo user_repository.Repository) UserService {
 
 func (u *userService) CreateNewUser(payload dto.RegisterRequest) (*dto.RegisterResponse, errs.MessageErr) {
 	err := helpers.ValidateStruct(payload)
-
 	if err != nil {
 		return nil, err
 	}
@@ -37,13 +36,11 @@ func (u *userService) CreateNewUser(payload dto.RegisterRequest) (*dto.RegisterR
 	}
 
 	err = user.HashPassword()
-
 	if err != nil {
 		return nil, err
 	}
 
 	err = u.userRepo.RegisterNewUser(user)
-
 	if err != nil {
 		return nil, err
 	}
@@ -65,13 +62,11 @@ func (u *userService) CreateNewUser(payload dto.RegisterRequest) (*dto.RegisterR
 // Login
 func (u *userService) LoginUser(newUserRequest dto.LoginRequest) (*dto.LoginResponse, errs.MessageErr) {
 	err := helpers.ValidateStruct(newUserRequest)
-
 	if err != nil {
 		return nil, err
 	}
 
 	user, err := u.userRepo.GetUserByEmail(newUserRequest.Email)
-
 	if err != nil {
 		if err.Status() == http.StatusNotFound {
 			return nil, errs.NewBadRequest("invalid email/password")
@@ -80,31 +75,19 @@ func (u *userService) LoginUser(newUserRequest dto.LoginRequest) (*dto.LoginResp
 	}
 
 	isValidPassword := user.ComparePassword(newUserRequest.Password)
-
 	if !isValidPassword {
 		return nil, errs.NewBadRequest("invalid email/password")
 	}
 
-	// token := user.GenerateToken()
-
-	// response := dto.LoginResponse{
-	// 	Result:     "success",
-	// 	StatusCode: http.StatusOK,
-	// 	Message:    "successfully logged in",
-	// 	Data: dto.TokenResponse{
-	// 		Token: token,
-	// 	},
-	// }
+	token := user.GenerateToken()
 
 	response := dto.LoginResponse{
-		StatusCode: 200,
-		Message:    "Successfully login",
-		Data: dto.UserDataResponse{
-			UserID:    user.UserID,
-			FullName:  user.FullName,
-			Email:     user.Email,
-			CreatedAt: user.CreatedAt,
+		StatusCode: http.StatusOK,
+		Message:    "successfully logged in",
+		Data: dto.TokenResponse{
+			Token: token,
 		},
 	}
+
 	return &response, nil
 }
