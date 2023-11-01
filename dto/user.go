@@ -5,9 +5,9 @@ import (
 )
 
 type RegisterRequest struct {
-	FullName string `json:"full_name"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
+	FullName string `json:"full_name" valid:"required~full name is required, type(string)"`
+	Password string `json:"password" valid:"required~password is required,minstringlength(6)~password must be at least 6 characters"`
+	Email    string `json:"email" valid:"email~email is not valid, required~email is required, type(string)"`
 }
 
 type UserDataResponse struct {
@@ -24,12 +24,16 @@ type RegisterResponse struct {
 }
 
 type LoginRequest struct {
-	Email    string `json:"email"`
+	Email    string `json:"email" valid:"required~full name is required, type(string)"`
 	Password string `json:"password"`
 }
 
 type LoginResponse struct {
-	StatusCode int              `json:"status"`
-	Message    string           `json:"message"`
-	Data       UserDataResponse `json:"data"`
+	StatusCode int           `json:"status"`
+	Message    string        `json:"message"`
+	Data       TokenResponse `json:"data"`
+}
+
+type TokenResponse struct {
+	Token string `json:"token"`
 }
