@@ -36,3 +36,10 @@ func (u *userPG) GetUserByEmail(email string) (*entity.User, errs.MessageErr) {
 
 	return &user, nil
 }
+// update user
+func (u *userPG) UpdateUser(user entity.User) errs.MessageErr {
+	if err := u.db.Save(&user).Error; err != nil {
+		return errs.NewInternalServerError(err.Error())
+	}
+	return nil
+}

@@ -55,3 +55,23 @@ func (uh *userHandler) LoginUser(ctx *gin.Context) {
 
 	ctx.JSON(result.StatusCode, result)
 }
+
+// update user without using userid params
+func (uh *userHandler) UpdateUser(ctx *gin.Context) {
+	var newRequest dto.UpdateUserRequest
+
+	if err := ctx.ShouldBindJSON(&newRequest); err != nil {
+		errBindJson := errs.NewUnprocessibleEntityError("Invalid Request Body")
+
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	result, err := uh.userService.UpdateUser(newRequest)
+	if err != nil {
+		ctx.JSON(err.Status(), err)
+		return
+	}
+
+	ctx.JSON(result.StatusCode, result)
+}

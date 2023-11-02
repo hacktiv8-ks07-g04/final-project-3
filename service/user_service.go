@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	CreateNewUser(payload dto.RegisterRequest) (*dto.RegisterResponse, errs.MessageErr)
 	LoginUser(newUserRequest dto.LoginRequest) (*dto.LoginResponse, errs.MessageErr)
+	UpdateUser(payload dto.UpdateUserRequest) (*dto.UpdateUserResponse, errs.MessageErr)
 }
 
 type userService struct {
@@ -86,6 +87,40 @@ func (u *userService) LoginUser(newUserRequest dto.LoginRequest) (*dto.LoginResp
 		Message:    "successfully logged in",
 		Data: dto.TokenResponse{
 			Token: token,
+		},
+	}
+
+	return &response, nil
+}
+
+// Update User
+func (u *userService) UpdateUser(payload dto.UpdateUserRequest) (*dto.UpdateUserResponse, errs.MessageErr) {
+	err := helpers.ValidateStruct(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := u.userRepo.GetUserByEmail(payload.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	user.FullName = payload.FullName
+	user.Email = payload.Email
+
+	err = u.userRepo.UpdateUser(*user)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.UpdateUserResponse{
+		StatusCode: http.StatusOK,
+		Message:    "successfully updated user",
+		Data: dto.UpdateUserDataResponse{
+			UserID:    user.UserID,
+			FullName:  user.FullName,
+			Email:     user.Email,
+			UpdatedAt: user.UpdatedAt,
 		},
 	}
 

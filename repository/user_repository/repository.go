@@ -8,4 +8,5 @@ import (
 type Repository interface {
 	RegisterNewUser(user entity.User) errs.MessageErr
 	GetUserByEmail(email string) (*entity.User, errs.MessageErr)
+	UpdateUser(user entity.User) errs.MessageErr
 }
