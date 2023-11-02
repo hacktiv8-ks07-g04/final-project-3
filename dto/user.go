@@ -37,3 +37,21 @@ type LoginResponse struct {
 type TokenResponse struct {
 	Token string `json:"token"`
 }
+
+type UpdateUserRequest struct {
+	FullName string `json:"full_name" valid:"required~full name is required, type(string)"`
+	Email    string `json:"email" valid:"email~email is not valid, required~email is required, type(string)"`
+}
+
+type UpdateUserResponse struct {
+	StatusCode int                    `json:"status"`
+	Message    string                 `json:"message"`
+	Data       UpdateUserDataResponse `json:"data"`
+}
+
+type UpdateUserDataResponse struct {
+	UserID    uint      `json:"id"`
+	FullName  string    `json:"full_name"`
+	Email     string    `json:"email"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
