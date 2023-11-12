@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/hacktiv8-ks07-g04/final-project-3/dto"
+	"github.com/hacktiv8-ks07-g04/final-project-3/entity"
 	"github.com/hacktiv8-ks07-g04/final-project-3/pkg/errs"
 	"github.com/hacktiv8-ks07-g04/final-project-3/service"
 )
@@ -74,4 +75,17 @@ func (uh *userHandler) UpdateUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(result.StatusCode, result)
+}
+
+// delete user
+func (uh *userHandler) DeleteUser(ctx *gin.Context) {
+	user := ctx.MustGet("userData").(entity.User)
+
+	response, err := uh.userService.DeleteUser(user.UserID)
+	if err != nil {
+		ctx.JSON(err.Status(), err)
+		return
+	}
+
+	ctx.JSON(response.Status, response)
 }

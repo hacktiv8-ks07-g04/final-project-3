@@ -26,7 +26,7 @@ func StartApp() {
 	authService := service.NewAuthService(userRepo)
 
 	r := gin.Default()
-	userRoute := r.Group("/user")
+	userRoute := r.Group("/users")
 	{
 
 		userRoute.POST("/register", userHandler.RegisterNewUser)
@@ -35,6 +35,7 @@ func StartApp() {
 		userRoute.Use(authService.Authentication())
 
 		userRoute.PUT("/update-account", userHandler.UpdateUser)
+		userRoute.DELETE("/delete-account", userHandler.DeleteUser)
 	}
 
 	r.Run(":" + port)
