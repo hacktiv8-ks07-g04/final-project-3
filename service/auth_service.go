@@ -11,6 +11,7 @@ import (
 
 type AuthService interface {
 	Authentication() gin.HandlerFunc
+	AdminAuthorization() gin.HandlerFunc
 }
 
 type authService struct {
@@ -48,6 +49,30 @@ func (a *authService) Authentication() gin.HandlerFunc {
 		_ = result
 
 		ctx.Set("userData", user)
+
+		if err == nil {
+			ctx.Next()
+		}
+	}
+}
+
+
+// Admin Authorization
+func (a *authService) AdminAuthorization() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		user := ctx.MustGet("userData").(entity.User)
+
+		acc, err := a.userRepo.GetUserById(user.UserID)
+		if err != nil {
+			ctx.AbortWithStatusJSON(err.Status(), err)
+			return
+		}
+
+		if acc.Role != "admin" {
+			err := errs.NewUnauthorizedError("Unauthorized to edit this data")
+			ctx.AbortWithStatusJSON(err.Status(), err)
+			return
+		}
 
 		ctx.Next()
 	}
