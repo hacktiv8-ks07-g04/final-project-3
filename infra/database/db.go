@@ -6,6 +6,7 @@ import (
 
 	"github.com/hacktiv8-ks07-g04/final-project-3/entity"
 	"github.com/hacktiv8-ks07-g04/final-project-3/infra/config"
+	"github.com/hacktiv8-ks07-g04/final-project-3/pkg/errs"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -47,18 +48,30 @@ func Migration() {
 		db.Model(&entity.User{}).Count(&count)
 		if count == 0 {
 			// Insert seed data
-			err := db.Create(&entity.User{
-				FullName: "Admin",
-				Email:    "admin@gmail.com",
-				Password: "admin123",
-				Role:     "admin",
-			}).Error
-			if err != nil {
-				// Handle error
-				log.Fatalf("Error seeding user: %v", err)
-			}
+			createUserAdmin()
 		}
 	}
+}
+
+func createUserAdmin() {
+	adminUser := &entity.User{
+		FullName: "Admin",
+		Email:    "admin@gmail.com",
+		Password: "admin123",
+		Role:     "admin",
+	}
+
+	err := adminUser.HashPassword()
+	if err != nil {
+		log.Fatalf("Error hashing password: %v", err)
+	}
+
+	result := db.Create(&adminUser)
+	if result.Error != nil {
+		err = errs.NewInternalServerError(result.Error.Error())
+		log.Fatalf("Error creating user: %v", err)
+	}
+
 }
 
 func GetDbInstance() *gorm.DB {
