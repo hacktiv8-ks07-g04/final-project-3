@@ -38,6 +38,14 @@ func ConnectDB() {
 
 func Migration() {
 	db.AutoMigrate(entity.User{})
+
+	db.Migrator().HasTable(&entity.User{})
+		db.Create(&entity.User{
+			FullName: "Admin",
+			Email:    "admin@gmail.com",
+			Password: "admin123",
+			Role:     "admin",
+		})
 }
 
 func GetDbInstance() *gorm.DB {
