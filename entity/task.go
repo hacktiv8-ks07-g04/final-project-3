@@ -7,8 +7,9 @@ type Task struct {
 	Title       string     `gorm:"type:varchar(255);not null"`
 	Description string     `gorm:"type:varchar(255);not null"`
 	Status      bool       `gorm:"type:boolean;not null"`
-	UserID      []User     `gorm:"foreignKey:ID;not null"`
-	CategoryID  []Category `gorm:"foreignKey:ID;not null"`
+	UserID      uint       `gorm:"not null"`
+	CategoryID  uint       `gorm:"not null"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
