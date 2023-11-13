@@ -1,4 +1,4 @@
-package handler
+package user_handler
 
 import (
 	"net/http"
@@ -28,7 +28,7 @@ func (h *userHandler) RegisterNewUser(ctx *gin.Context) {
 		return
 	}
 
-	response, err := h.userService.CreateNewUser(newRequest)
+	response, err := h.userService.CreateNewUser(&newRequest)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errs.NewInternalServerError(err.Error()))
 		return
