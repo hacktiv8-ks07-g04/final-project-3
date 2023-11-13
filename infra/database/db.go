@@ -1,9 +1,6 @@
 package database
 
 import (
-	// "fmt"
-	// "log"
-
 	"fmt"
 	"log"
 
