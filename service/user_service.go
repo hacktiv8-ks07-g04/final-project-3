@@ -11,7 +11,7 @@ import (
 )
 
 type UserService interface {
-	CreateNewUser(payload dto.RegisterRequest) (*dto.RegisterResponse, errs.MessageErr)
+	CreateNewUser(payload *dto.RegisterRequest) (*dto.RegisterResponse, errs.MessageErr)
 	LoginUser(newUserRequest dto.LoginRequest) (*dto.LoginResponse, errs.MessageErr)
 	UpdateUser(payload dto.UpdateUserRequest) (*dto.UpdateUserResponse, errs.MessageErr)
 	DeleteUser(id uint) (*dto.DeleteUserResponse, errs.MessageErr)
@@ -25,7 +25,7 @@ func NewUserService(userRepo user_repository.Repository) UserService {
 	return &userService{userRepo: userRepo}
 }
 
-func (u *userService) CreateNewUser(payload dto.RegisterRequest) (*dto.RegisterResponse, errs.MessageErr) {
+func (u *userService) CreateNewUser(payload *dto.RegisterRequest) (*dto.RegisterResponse, errs.MessageErr) {
 	err := helpers.ValidateStruct(payload)
 	if err != nil {
 		return nil, err
@@ -42,7 +42,7 @@ func (u *userService) CreateNewUser(payload dto.RegisterRequest) (*dto.RegisterR
 		return nil, err
 	}
 
-	err = u.userRepo.RegisterNewUser(user)
+	err = u.userRepo.RegisterNewUser(&user)
 	if err != nil {
 		return nil, err
 	}

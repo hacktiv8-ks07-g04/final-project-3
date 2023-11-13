@@ -20,7 +20,7 @@ func UserInit(db *gorm.DB) user_repository.Repository {
 	}
 }
 
-func (u *userPG) RegisterNewUser(user entity.User) errs.MessageErr {
+func (u *userPG) RegisterNewUser(user *entity.User) errs.MessageErr {
 	if err := u.db.Create(&user).Error; err != nil {
 		return errs.NewInternalServerError(err.Error())
 	}
