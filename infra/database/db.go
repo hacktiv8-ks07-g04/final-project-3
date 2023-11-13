@@ -37,15 +37,31 @@ func ConnectDB() {
 }
 
 func Migration() {
-	db.AutoMigrate(entity.User{})
+	// AutoMigrate your models
+	err := db.AutoMigrate(&entity.User{}, &entity.Category{}, &entity.Task{})
+	if err != nil {
+		// Handle error
+		log.Fatalf("Error migrating: %v", err)
+	}
 
-	db.Migrator().HasTable(&entity.User{})
-		db.Create(&entity.User{
-			FullName: "Admin",
-			Email:    "admin@gmail.com",
-			Password: "admin123",
-			Role:     "admin",
-		})
+	// Check if the User table exists and is empty
+	if db.Migrator().HasTable(&entity.User{}) {
+		var count int64
+		db.Model(&entity.User{}).Count(&count)
+		if count == 0 {
+			// Insert seed data
+			err := db.Create(&entity.User{
+				FullName: "Admin",
+				Email:    "admin@gmail.com",
+				Password: "admin123",
+				Role:     "admin",
+			}).Error
+			if err != nil {
+				// Handle error
+				log.Fatalf("Error seeding user: %v", err)
+			}
+		}
+	}
 }
 
 func GetDbInstance() *gorm.DB {
