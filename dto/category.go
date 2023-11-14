@@ -27,3 +27,9 @@ type NewCategoryDataResponse struct {
 	Type       string    `json:"type"`
 	CreatedAt  time.Time `json:"created_at"`
 }
+
+type CategoryListResponse struct {
+	StatusCode int      `json:"status"`
+	Message    string   `json:"message"`
+	Data       []Category `json:"data"`
+}

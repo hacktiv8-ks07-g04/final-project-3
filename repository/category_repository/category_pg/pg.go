@@ -24,3 +24,12 @@ func (c *categoryPG) CreateCategory(category *entity.Category) errs.MessageErr {
 	}
 	return nil
 }
+
+// get category with all associated task
+func (c *categoryPG) GetCategoryWithTask() ([]entity.Category, errs.MessageErr) {
+	var categories []entity.Category
+	if err := c.db.Preload("Task").Find(&categories).Error; err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+	return categories, nil
+}

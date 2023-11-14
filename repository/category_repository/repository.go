@@ -7,4 +7,5 @@ import (
 
 type Repository interface {
 	CreateCategory(category *entity.Category) errs.MessageErr
+	GetCategoryWithTask() ([]entity.Category, errs.MessageErr)
 }

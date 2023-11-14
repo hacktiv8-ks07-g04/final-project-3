@@ -1,7 +1,6 @@
 package category_handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +31,14 @@ func (ch *categoryHandler) CreateCategory(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, response)
+}
 
-	fmt.Println("CreateCategory")
+func (ch *categoryHandler) GetCategoryWithTask(ctx *gin.Context) {
+	response, err := ch.categoryService.GetCategoryWithTask()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }
