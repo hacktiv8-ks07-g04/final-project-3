@@ -7,5 +7,5 @@ type Category struct {
 	Type       string `gorm:"type:varchar(255);not null" json:"type" valid:"required~type is required, type(string)"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	Tasks      []Task `gorm:"foreignKey:TaskID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Task       []Task `gorm:"foreignKey:CategoryID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

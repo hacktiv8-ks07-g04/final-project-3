@@ -22,7 +22,7 @@ type User struct {
 	Role      string `gorm:"not null;default:'member'" json:"role"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Tasks     []Task `gorm:"foreignKey:TaskID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Task      []Task `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (u *User) HashPassword() errs.MessageErr {
