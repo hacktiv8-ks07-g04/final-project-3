@@ -24,3 +24,5 @@ tmp/
 
 # environment
 .env
+
+test.json
