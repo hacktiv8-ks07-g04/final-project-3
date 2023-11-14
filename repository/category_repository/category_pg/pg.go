@@ -63,3 +63,17 @@ func (c *categoryPG) UpdateCategory(id uint, category *entity.Category) (*entity
 
 	return &categoryData, nil
 }
+
+// delete category
+func (c *categoryPG) DeleteCategory(id uint) errs.MessageErr {
+	category, err := c.GetCategoryById(id)
+	if err != nil {
+		return err
+	}
+
+	if err := c.db.Delete(category).Error; err != nil {
+		return errs.NewInternalServerError(err.Error())
+	}
+
+	return nil
+}

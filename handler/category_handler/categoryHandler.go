@@ -65,3 +65,19 @@ func (ch *categoryHandler) UpdateCategory(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, response)
 }
+
+func (ch *categoryHandler) DeleteCategory(ctx *gin.Context) {
+	categoryID, err := helpers.GetParamId(ctx, "categoryId")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errs.NewBadRequest("invalid parameter id"))
+		return
+	}
+
+	response, err := ch.categoryService.DeleteCategory(categoryID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}

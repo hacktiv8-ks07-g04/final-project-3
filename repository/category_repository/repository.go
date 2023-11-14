@@ -7,6 +7,7 @@ import (
 
 type Repository interface {
 	CreateCategory(category *entity.Category) errs.MessageErr
+	DeleteCategory(id uint) errs.MessageErr
 	UpdateCategory(id uint, category *entity.Category) (*entity.Category, errs.MessageErr)
 	GetCategoryWithTask() ([]entity.Category, errs.MessageErr)
 	GetCategoryById(id uint) (*entity.Category, errs.MessageErr)

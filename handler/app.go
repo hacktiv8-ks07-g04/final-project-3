@@ -53,9 +53,10 @@ func StartApp() {
 	{
 		categoryRoute.Use(authService.Authentication())
 
-		categoryRoute.POST("", authService.AdminAuthorization(), categoryHandler.CreateCategory)
 		categoryRoute.GET("", categoryHandler.GetCategoryWithTask)
+		categoryRoute.POST("", authService.AdminAuthorization(), categoryHandler.CreateCategory)
 		categoryRoute.PATCH("/:categoryId", authService.AdminAuthorization(), categoryHandler.UpdateCategory)
+		categoryRoute.DELETE("/:categoryId", authService.AdminAuthorization(), categoryHandler.DeleteCategory)
 	}
 
 	taskRoute := r.Group("/tasks")
