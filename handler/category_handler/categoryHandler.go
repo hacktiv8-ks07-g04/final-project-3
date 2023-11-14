@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hacktiv8-ks07-g04/final-project-3/dto"
 	"github.com/hacktiv8-ks07-g04/final-project-3/pkg/errs"
+	"github.com/hacktiv8-ks07-g04/final-project-3/pkg/helpers"
 	"github.com/hacktiv8-ks07-g04/final-project-3/service"
 )
 
@@ -35,6 +36,28 @@ func (ch *categoryHandler) CreateCategory(ctx *gin.Context) {
 
 func (ch *categoryHandler) GetCategoryWithTask(ctx *gin.Context) {
 	response, err := ch.categoryService.GetCategoryWithTask()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
+}
+
+func (ch *categoryHandler) UpdateCategory(ctx *gin.Context) {
+	var request dto.UpdateCategoryRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	categoryID, err := helpers.GetParamId(ctx, "categoryId")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errs.NewBadRequest("invalid parameter id"))
+		return
+	}
+
+	response, err := ch.categoryService.UpdateCategory(categoryID, &request)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return

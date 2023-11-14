@@ -28,8 +28,38 @@ func (c *categoryPG) CreateCategory(category *entity.Category) errs.MessageErr {
 // get category with all associated task
 func (c *categoryPG) GetCategoryWithTask() ([]entity.Category, errs.MessageErr) {
 	var categories []entity.Category
+
 	if err := c.db.Preload("Task").Find(&categories).Error; err != nil {
 		return nil, errs.NewInternalServerError(err.Error())
 	}
+
 	return categories, nil
+}
+
+// get category by id
+func (c *categoryPG) GetCategoryById(id uint) (*entity.Category, errs.MessageErr) {
+	var category entity.Category
+
+	if err := c.db.First(&category, id).Error; err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+
+	return &category, nil
+}
+
+// update category
+func (c *categoryPG) UpdateCategory(id uint, category *entity.Category) (*entity.Category, errs.MessageErr) {
+	var categoryData entity.Category
+
+	if err := c.db.First(&categoryData, id).Error; err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+
+	categoryData.Type = category.Type
+
+	if err := c.db.Save(&categoryData).Error; err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+
+	return &categoryData, nil
 }

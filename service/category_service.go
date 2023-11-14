@@ -13,6 +13,7 @@ import (
 type CategoryService interface {
 	CreateCategory(payload *dto.NewCategoryRequest) (*dto.NewCategoryResponse, errs.MessageErr)
 	GetCategoryWithTask() (*dto.CategoryListResponse, errs.MessageErr)
+	UpdateCategory(categoryID uint, payload *dto.UpdateCategoryRequest) (*dto.UpdateCategoryResponse, errs.MessageErr)
 }
 
 type categoryService struct {
@@ -87,6 +88,35 @@ func (c *categoryService) GetCategoryWithTask() (*dto.CategoryListResponse, errs
 		StatusCode: http.StatusOK,
 		Message:    "Successfully get all categories",
 		Data:       categories,
+	}
+
+	return &response, nil
+}
+
+// update category
+func (c *categoryService) UpdateCategory(categoryID uint, payload *dto.UpdateCategoryRequest) (*dto.UpdateCategoryResponse, errs.MessageErr) {
+	err := helpers.ValidateStruct(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	category := &entity.Category{
+		Type: payload.Type,
+	}
+
+	result, err := c.categoryRepo.UpdateCategory(categoryID, category)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.UpdateCategoryResponse{
+		StatusCode: 200,
+		Message:    "Successfully updated category",
+		Data: dto.UpdateCategoryDataResponse{
+			CategoryID: result.CategoryID,
+			Type:       result.Type,
+			UpdatedAt:  result.UpdatedAt,
+		},
 	}
 
 	return &response, nil
