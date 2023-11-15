@@ -28,13 +28,12 @@ func LoadAppConfig() {
 }
 
 func GetConfig() appConfig {
-	fmt.Println(os.Getenv("DB_HOST"))
 	return appConfig{
-		DBHost:     os.Getenv("DB_HOST"),
-		DBPort:     os.Getenv("DB_PORT"),
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBName:     os.Getenv("DB_NAME"),
+		DBHost:       os.Getenv("DB_HOST"),
+		DBPort:       os.Getenv("DB_PORT"),
+		DBUser:       os.Getenv("DB_USER"),
+		DBPassword:   os.Getenv("DB_PASSWORD"),
+		DBName:       os.Getenv("DB_NAME"),
 		JWTSecretKey: os.Getenv("JWT_SECRET_KEY"),
 	}
 }
