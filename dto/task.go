@@ -74,7 +74,7 @@ type UpdateTaskDetailResponse struct {
 }
 
 type UpdateTaskStatusRequest struct {
-	Status bool `json:"status" valid:"required~status is required, type(boolean)"`
+	Status bool `json:"status" valid:"required~status is required, type(bool)"`
 }
 
 type UpdateTaskCategoryRequest struct {
