@@ -51,3 +51,24 @@ type TaskListResponse struct {
 	Message    string     `json:"message"`
 	Data       []UserTask `json:"data"`
 }
+
+type UpdateDetailTaskRequest struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+}
+
+type UpdateDetailTaskData struct {
+	ID          uint      `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Status      bool      `json:"status"`
+	UserID      uint      `json:"user_id"`
+	CategoryID  uint      `json:"category_id"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type UpdateTaskDetailResponse struct {
+	StatusCode int                  `json:"status"`
+	Message    string               `json:"message"`
+	Data       UpdateDetailTaskData `json:"data"`
+}

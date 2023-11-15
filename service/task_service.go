@@ -13,6 +13,7 @@ import (
 type TaskService interface {
 	CreateNewTask(userId uint, payload *dto.NewTaskRequest) (*dto.NewTaskDataResponse, errs.MessageErr)
 	GetTaskWithUser() (*dto.TaskListResponse, errs.MessageErr)
+	UpdateTaskById(id uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
 }
 
 type taskService struct {
@@ -88,6 +89,43 @@ func (t *taskService) GetTaskWithUser() (*dto.TaskListResponse, errs.MessageErr)
 		StatusCode: http.StatusOK,
 		Message:    "Success get all tasks",
 		Data:       userTask,
+	}
+
+	return &response, nil
+}
+
+// update task title and description
+func (t *taskService) UpdateTaskById(id uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr) {
+	err := helpers.ValidateStruct(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	task, err := t.taskRepo.GetTaskById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	task.Title = payload.Title
+	task.Description = payload.Description
+
+	err = t.taskRepo.UpdateTaskById(id, task)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.UpdateTaskDetailResponse{
+		StatusCode: http.StatusOK,
+		Message:    "Success update task",
+		Data: dto.UpdateDetailTaskData{
+			ID:          task.ID,
+			Title:       task.Title,
+			Description: task.Description,
+			Status:      task.Status,
+			UserID:      task.UserID,
+			CategoryID:  task.CategoryID,
+			UpdatedAt:   task.UpdatedAt,
+		},
 	}
 
 	return &response, nil

@@ -32,3 +32,23 @@ func (t *taskPg) GetTaskWithUser() ([]entity.Task, errs.MessageErr) {
 
 	return task, nil
 }
+
+// get task id
+func (t *taskPg) GetTaskById(id uint) (*entity.Task, errs.MessageErr) {
+	var task entity.Task
+
+	if err := t.db.Where("id = ?", id).First(&task).Error; err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+
+	return &task, nil
+}
+
+// update task title and description
+func (t *taskPg) UpdateTaskById(id uint, task *entity.Task) errs.MessageErr {
+	if err := t.db.Model(&task).Where("id = ?", id).Updates(task).Error; err != nil {
+		return errs.NewInternalServerError(err.Error())
+	}
+
+	return nil
+}

@@ -8,4 +8,6 @@ import (
 type Repository interface {
 	CreateNewTask(task *entity.Task) errs.MessageErr
 	GetTaskWithUser() ([]entity.Task, errs.MessageErr)
+	UpdateTaskById(id uint, task *entity.Task) errs.MessageErr
+	GetTaskById(id uint) (*entity.Task, errs.MessageErr)
 }
