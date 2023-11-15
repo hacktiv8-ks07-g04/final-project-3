@@ -51,6 +51,7 @@ func (h *taskHandler) GetTaskWithUser(ctx *gin.Context) {
 
 func (h *taskHandler) UpdateTaskById(ctx *gin.Context) {
 	var updateRequest dto.UpdateDetailTaskRequest
+	user := ctx.MustGet("userData").(entity.User)
 
 	taskId, err := helpers.GetParamId(ctx, "taskId")
 	if err != nil {
@@ -64,11 +65,65 @@ func (h *taskHandler) UpdateTaskById(ctx *gin.Context) {
 		return
 	}
 
-	response, err := h.taskService.UpdateTaskById(taskId, &updateRequest)
+	response, err := h.taskService.UpdateTaskById(taskId, user.ID, &updateRequest)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errs.NewInternalServerError("Error when trying to update task"))
+		ctx.JSON(http.StatusInternalServerError, errs.NewInternalServerError("Error when trying to update task title and description field"))
 		return
 	}
 
 	ctx.JSON(http.StatusOK, response)
+}
+
+func (h *taskHandler) UpdateTaskStatus(ctx *gin.Context) {
+	var updateStatus dto.UpdateTaskStatusRequest
+	user := ctx.MustGet("userData").(entity.User)
+
+	id, err := helpers.GetParamId(ctx, "taskId")
+	if err != nil {
+		errBindJson := errs.NewBadRequest("Error occurred because id not found")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&updateStatus); err != nil {
+		errBindJson := errs.NewUnprocessibleEntityError("invalid json body")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	result, err := h.taskService.UpdateTaskStatus(id, user.ID, &updateStatus)
+	if err != nil {
+		errBindJson := errs.NewBadRequest("Error occurred when updating task status")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	ctx.JSON(result.StatusCode, result)
+}
+
+func (h *taskHandler) UpdateTaskCategory(ctx *gin.Context) {
+	var updateCategory dto.UpdateTaskCategoryRequest
+	user := ctx.MustGet("userData").(entity.User)
+
+	id, err := helpers.GetParamId(ctx, "taskId")
+	if err != nil {
+		errBindJson := errs.NewBadRequest("Error occurred because id not found")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	if err := ctx.ShouldBindJSON(&updateCategory); err != nil {
+		errBindJson := errs.NewUnprocessibleEntityError("invalid json body")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	result, err := h.taskService.UpdateTaskCategory(id, user.ID, &updateCategory)
+	if err != nil {
+		errBindJson := errs.NewBadRequest("Error occurred when updating task category")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	ctx.JSON(result.StatusCode, result)
 }
