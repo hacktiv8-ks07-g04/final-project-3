@@ -29,11 +29,21 @@ func (h *taskHandler) CreateNewTask(ctx *gin.Context) {
 		return
 	}
 
-	response, err := h.taskService.CreateNewTask(user.UserID, &newRequest)
+	response, err := h.taskService.CreateNewTask(user.ID, &newRequest)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errs.NewInternalServerError("Error when trying to create new task"))
 		return
 	}
 
 	ctx.JSON(http.StatusCreated, response)
+}
+
+func (h *taskHandler) GetTaskWithUser(ctx *gin.Context) {
+	response, err := h.taskService.GetTaskWithUser()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errs.NewInternalServerError("Error when trying to get data"))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

@@ -7,4 +7,5 @@ import (
 
 type Repository interface {
 	CreateNewTask(task *entity.Task) errs.MessageErr
+	GetTaskWithUser() ([]entity.Task, errs.MessageErr)
 }

@@ -21,3 +21,14 @@ func (t *taskPg) CreateNewTask(task *entity.Task) errs.MessageErr {
 	}
 	return nil
 }
+
+// get task with all associated user
+func (t *taskPg) GetTaskWithUser() ([]entity.Task, errs.MessageErr) {
+	var task []entity.Task
+
+	if err := t.db.Preload("User").Find(&task).Error; err != nil {
+		return nil, errs.NewInternalServerError(err.Error())
+	}
+
+	return task, nil
+}

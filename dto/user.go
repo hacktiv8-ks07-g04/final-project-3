@@ -4,6 +4,12 @@ import (
 	"time"
 )
 
+type User struct {
+	ID        uint      `json:"id"`
+	Email     string    `json:"email"`
+	FullName  string    `json:"full_name"`
+}
+
 type RegisterRequest struct {
 	FullName string `json:"full_name" valid:"required~full name is required, type(string)"`
 	Password string `json:"password" valid:"required~password is required,minstringlength(6)~password must be at least 6 characters"`
