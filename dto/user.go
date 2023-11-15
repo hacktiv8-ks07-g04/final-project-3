@@ -31,7 +31,7 @@ type RegisterResponse struct {
 
 type LoginRequest struct {
 	Email    string `json:"email" valid:"required~full name is required, type(string)"`
-	Password string `json:"password"`
+	Password string `json:"password" valid:"required~password is required, type(string)"`
 }
 
 type LoginResponse struct {
