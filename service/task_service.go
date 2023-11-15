@@ -13,7 +13,11 @@ import (
 type TaskService interface {
 	CreateNewTask(userId uint, payload *dto.NewTaskRequest) (*dto.NewTaskDataResponse, errs.MessageErr)
 	GetTaskWithUser() (*dto.TaskListResponse, errs.MessageErr)
-	UpdateTaskById(id uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
+	// UpdateTaskById(id uint, userId uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
+	UpdateTaskById(id uint, userId uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
+	UpdateTaskStatus(id uint, userId uint, payload *dto.UpdateTaskStatusRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
+	// UpdateTaskCategory(id uint, payload *dto.UpdateTaskCategoryRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
+	UpdateTaskCategory(id uint, userId uint, payload *dto.UpdateTaskCategoryRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
 }
 
 type taskService struct {
@@ -95,36 +99,96 @@ func (t *taskService) GetTaskWithUser() (*dto.TaskListResponse, errs.MessageErr)
 }
 
 // update task title and description
-func (t *taskService) UpdateTaskById(id uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr) {
+func (t *taskService) UpdateTaskById(id uint, userId uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr) {
 	err := helpers.ValidateStruct(payload)
 	if err != nil {
 		return nil, err
 	}
 
-	task, err := t.taskRepo.GetTaskById(id)
-	if err != nil {
-		return nil, err
+	updateTask := entity.Task{
+		Title:       payload.Title,
+		Description: payload.Description,
 	}
 
-	task.Title = payload.Title
-	task.Description = payload.Description
-
-	err = t.taskRepo.UpdateTaskById(id, task)
+	result, err := t.taskRepo.UpdateTaskTitleAndDescription(id, userId, &updateTask)
 	if err != nil {
-		return nil, err
+		return nil, errs.NewInternalServerError("Error occurred while trying to edit payload")
 	}
 
 	response := dto.UpdateTaskDetailResponse{
 		StatusCode: http.StatusOK,
-		Message:    "Success update task",
+		Message:    "Success update task title and description field",
 		Data: dto.UpdateDetailTaskData{
-			ID:          task.ID,
-			Title:       task.Title,
-			Description: task.Description,
-			Status:      task.Status,
-			UserID:      task.UserID,
-			CategoryID:  task.CategoryID,
-			UpdatedAt:   task.UpdatedAt,
+			ID:          result.ID,
+			Title:       result.Title,
+			Description: result.Description,
+			Status:      result.Status,
+			UserID:      result.UserID,
+			CategoryID:  result.CategoryID,
+			UpdatedAt:   result.UpdatedAt,
+		},
+	}
+
+	return &response, nil
+}
+
+// update status of a task
+func (t *taskService) UpdateTaskStatus(id uint, userId uint, payload *dto.UpdateTaskStatusRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr) {
+	err := helpers.ValidateStruct(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	updateStatus := entity.Task{
+		Status: payload.Status,
+	}
+
+	result, err := t.taskRepo.UpdateTaskStatus(id, userId, &updateStatus)
+	if err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to edit payload")
+	}
+	response := dto.UpdateTaskDetailResponse{
+		StatusCode: http.StatusOK,
+		Message:    "Success update task status field",
+		Data: dto.UpdateDetailTaskData{
+			ID:          result.ID,
+			Title:       result.Title,
+			Description: result.Description,
+			Status:      result.Status,
+			UserID:      result.UserID,
+			CategoryID:  result.CategoryID,
+			UpdatedAt:   result.UpdatedAt,
+		},
+	}
+
+	return &response, nil
+}
+
+func (t *taskService) UpdateTaskCategory(id uint, userId uint, payload *dto.UpdateTaskCategoryRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr) {
+	err := helpers.ValidateStruct(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	updateCategory := entity.Task{
+		CategoryID: payload.CategoryID,
+	}
+
+	result, err := t.taskRepo.UpdateTaskCategory(id, userId, &updateCategory)
+	if err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to edit payload")
+	}
+	response := dto.UpdateTaskDetailResponse{
+		StatusCode: http.StatusOK,
+		Message:    "Success update task category field",
+		Data: dto.UpdateDetailTaskData{
+			ID:          result.ID,
+			Title:       result.Title,
+			Description: result.Description,
+			Status:      result.Status,
+			UserID:      result.UserID,
+			CategoryID:  result.CategoryID,
+			UpdatedAt:   result.UpdatedAt,
 		},
 	}
 
