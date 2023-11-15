@@ -15,14 +15,14 @@ import (
 var invalidTokenErr = errs.NewUnauthorizedError("Invalid token")
 
 type User struct {
-	UserID    uint   `gorm:"primaryKey" json:"id"`
-	FullName  string `gorm:"type:varchar(100);not null" json:"full_name"`
-	Email     string `gorm:"type:varchar(100);not null;unique" json:"email"`
-	Password  string `gorm:"type:varchar(100);not null" json:"password"`
+	ID        uint   `gorm:"primaryKey" json:"id"`
+	FullName  string `gorm:"not null" json:"full_name"`
+	Email     string `gorm:"not null;unique" json:"email"`
+	Password  string `gorm:"not null" json:"password"`
 	Role      string `gorm:"not null;default:'member'" json:"role"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Task      []Task `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Task      []Task `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"tasks"`
 }
 
 func (u *User) HashPassword() errs.MessageErr {
@@ -66,7 +66,7 @@ func (u *User) bindTokenToUserEntity(claim jwt.MapClaims) errs.MessageErr {
 	if id, ok := claim["id"].(float64); !ok {
 		return invalidTokenErr
 	} else {
-		u.UserID = uint(id)
+		u.ID = uint(id)
 	}
 
 	if email, ok := claim["email"].(string); !ok {
@@ -115,7 +115,7 @@ func (u *User) ValidateToken(bearerToken string) errs.MessageErr {
 
 func (u *User) tokenClaim() jwt.MapClaims {
 	return jwt.MapClaims{
-		"id":    u.UserID,
+		"id":    u.ID,
 		"email": u.Email,
 	}
 }
