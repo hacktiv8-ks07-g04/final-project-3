@@ -111,7 +111,7 @@ func (c *categoryService) UpdateCategory(categoryID uint, payload *dto.UpdateCat
 	}
 
 	response := dto.UpdateCategoryResponse{
-		StatusCode: 200,
+		StatusCode: http.StatusOK,
 		Message:    "Successfully updated category",
 		Data: dto.UpdateCategoryDataResponse{
 			CategoryID: result.ID,
