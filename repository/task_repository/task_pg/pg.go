@@ -44,11 +44,57 @@ func (t *taskPg) GetTaskById(id uint) (*entity.Task, errs.MessageErr) {
 	return &task, nil
 }
 
-// update task title and description
-func (t *taskPg) UpdateTaskById(id uint, task *entity.Task) errs.MessageErr {
-	if err := t.db.Model(&task).Where("id = ?", id).Updates(task).Error; err != nil {
-		return errs.NewInternalServerError(err.Error())
+func (t *taskPg) UpdateTaskTitleAndDescription(id uint, userId uint, taskPayload *entity.Task) (*entity.Task, errs.MessageErr) {
+	task, err := t.GetTaskById(id)
+	if err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to find task")
 	}
 
-	return nil
+	if task.UserID != userId {
+		return nil, errs.NewUnauthorizedError("You are not authorized to update this task")
+	}
+
+	if err := t.db.Model(task).Updates(map[string]interface{}{
+		"Title":       taskPayload.Title,
+		"Description": taskPayload.Description,
+	}).Error; err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to update task")
+	}
+
+	return task, nil
+}
+
+func (t *taskPg) UpdateTaskStatus(id uint, userId uint, taskPayload *entity.Task) (*entity.Task, errs.MessageErr) {
+	task, err := t.GetTaskById(id)
+	if err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to find task")
+	}
+
+	if task.UserID != userId {
+		return nil, errs.NewUnauthorizedError("You are not authorized to update this task")
+	}
+
+	if err := t.db.Model(task).Update("Status", taskPayload.Status).Error; err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to update task")
+	}
+
+	return task, nil
+}
+
+func (t *taskPg) UpdateTaskCategory(id uint, userId uint, taskPayload *entity.Task) (*entity.Task, errs.MessageErr) {
+	task, err := t.GetTaskById(id)
+
+	if err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to find task")
+	}
+
+	if task.UserID != userId {
+		return nil, errs.NewUnauthorizedError("You are not authorized to update this task")
+	}
+
+	if err := t.db.Model(task).Updates(entity.Task{CategoryID: taskPayload.CategoryID}).Error; err != nil {
+		return nil, errs.NewInternalServerError("Error occurred while trying to update task")
+	}
+
+	return task, nil
 }
