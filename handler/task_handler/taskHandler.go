@@ -127,3 +127,23 @@ func (h *taskHandler) UpdateTaskCategory(ctx *gin.Context) {
 
 	ctx.JSON(result.StatusCode, result)
 }
+
+func (h *taskHandler) DeleteTaskById(ctx *gin.Context) {
+	user := ctx.MustGet("userData").(entity.User)
+
+	id, err := helpers.GetParamId(ctx, "taskId")
+	if err != nil {
+		errBindJson := errs.NewBadRequest("Error occurred because id not found")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	result, err := h.taskService.DeleteTaskById(id, user.ID)
+	if err != nil {
+		errBindJson := errs.NewBadRequest("Error occurred when deleting task")
+		ctx.JSON(errBindJson.Status(), errBindJson)
+		return
+	}
+
+	ctx.JSON(result.StatusCode, result)
+}

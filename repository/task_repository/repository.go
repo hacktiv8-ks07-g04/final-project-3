@@ -12,4 +12,5 @@ type Repository interface {
 	UpdateTaskStatus(id uint, userId uint, taskPayload *entity.Task) (*entity.Task, errs.MessageErr)
 	UpdateTaskCategory(id uint, userId uint, taskPayload *entity.Task) (*entity.Task, errs.MessageErr)
 	UpdateTaskTitleAndDescription(id uint, userId uint, taskPayload *entity.Task) (*entity.Task, errs.MessageErr)
+	DeleteTaskById(id uint, userId uint) errs.MessageErr
 }

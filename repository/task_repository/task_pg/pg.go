@@ -98,3 +98,21 @@ func (t *taskPg) UpdateTaskCategory(id uint, userId uint, taskPayload *entity.Ta
 
 	return task, nil
 }
+
+func (t *taskPg) DeleteTaskById(id uint, userId uint) errs.MessageErr {
+	task, err := t.GetTaskById(id)
+
+	if err != nil {
+		return errs.NewInternalServerError("Error occurred while trying to find task")
+	}
+
+	if task.UserID != userId {
+		return errs.NewUnauthorizedError("You are not authorized to delete this task")
+	}
+
+	if err := t.db.Delete(&task).Error; err != nil {
+		return errs.NewInternalServerError("Error occurred while trying to delete task")
+	}
+
+	return nil
+}

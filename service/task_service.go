@@ -13,11 +13,10 @@ import (
 type TaskService interface {
 	CreateNewTask(userId uint, payload *dto.NewTaskRequest) (*dto.NewTaskDataResponse, errs.MessageErr)
 	GetTaskWithUser() (*dto.TaskListResponse, errs.MessageErr)
-	// UpdateTaskById(id uint, userId uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
 	UpdateTaskById(id uint, userId uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
 	UpdateTaskStatus(id uint, userId uint, payload *dto.UpdateTaskStatusRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
-	// UpdateTaskCategory(id uint, payload *dto.UpdateTaskCategoryRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
 	UpdateTaskCategory(id uint, userId uint, payload *dto.UpdateTaskCategoryRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr)
+	DeleteTaskById(id uint, userId uint) (*dto.DeleteCategoryResponse, errs.MessageErr)
 }
 
 type taskService struct {
@@ -190,6 +189,21 @@ func (t *taskService) UpdateTaskCategory(id uint, userId uint, payload *dto.Upda
 			CategoryID:  result.CategoryID,
 			UpdatedAt:   result.UpdatedAt,
 		},
+	}
+
+	return &response, nil
+}
+
+// delete task by id
+func (t *taskService) DeleteTaskById(id uint, userId uint) (*dto.DeleteCategoryResponse, errs.MessageErr) {
+	err := t.taskRepo.DeleteTaskById(id, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	response := dto.DeleteCategoryResponse{
+		StatusCode: http.StatusOK,
+		Message:    "Task has been successfully deleted",
 	}
 
 	return &response, nil

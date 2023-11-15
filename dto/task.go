@@ -80,3 +80,8 @@ type UpdateTaskStatusRequest struct {
 type UpdateTaskCategoryRequest struct {
 	CategoryID uint `json:"category_id" valid:"required~category_id is required, type(uint)"`
 }
+
+type DeleteTaskResponse struct {
+	StatusCode int    `json:"status"`
+	Message    string `json:"message"`
+}

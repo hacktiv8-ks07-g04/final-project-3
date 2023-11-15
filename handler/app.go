@@ -68,6 +68,7 @@ func StartApp() {
 		taskRoute.PUT("/:taskId", taskHandler.UpdateTaskById)
 		taskRoute.PATCH("/update-status/:taskId", taskHandler.UpdateTaskStatus)
 		taskRoute.PATCH("/update-category/:taskId", taskHandler.UpdateTaskCategory)
+		taskRoute.DELETE("/:taskId", taskHandler.DeleteTaskById)
 	}
 
 	r.Run(":" + port)
