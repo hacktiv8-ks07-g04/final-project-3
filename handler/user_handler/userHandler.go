@@ -81,7 +81,7 @@ func (uh *userHandler) UpdateUser(ctx *gin.Context) {
 func (uh *userHandler) DeleteUser(ctx *gin.Context) {
 	user := ctx.MustGet("userData").(entity.User)
 
-	response, err := uh.userService.DeleteUser(user.UserID)
+	response, err := uh.userService.DeleteUser(user.ID)
 	if err != nil {
 		ctx.JSON(err.Status(), err)
 		return

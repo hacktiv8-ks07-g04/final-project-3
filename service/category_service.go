@@ -44,7 +44,7 @@ func (c *categoryService) CreateCategory(payload *dto.NewCategoryRequest) (*dto.
 		StatusCode: 200,
 		Message:    "Successfully created new category",
 		Data: dto.NewCategoryDataResponse{
-			CategoryID: category.CategoryID,
+			CategoryID: category.ID,
 			Type:       category.Type,
 			CreatedAt:  category.CreatedAt,
 		},
@@ -64,7 +64,7 @@ func (c *categoryService) GetCategoryWithTask() (*dto.CategoryListResponse, errs
 		tasks := []dto.Task{}
 		for _, t := range v.Task {
 			task := dto.Task{
-				ID:          t.TaskID,
+				ID:          t.ID,
 				Title:       t.Title,
 				Description: t.Description,
 				UserID:      t.UserID,
@@ -76,7 +76,7 @@ func (c *categoryService) GetCategoryWithTask() (*dto.CategoryListResponse, errs
 		}
 
 		category := dto.Category{
-			CategoryID: v.CategoryID,
+			CategoryID: v.ID,
 			Type:       v.Type,
 			CreatedAt:  v.CreatedAt,
 			UpdatedAt:  v.UpdatedAt,
@@ -114,7 +114,7 @@ func (c *categoryService) UpdateCategory(categoryID uint, payload *dto.UpdateCat
 		StatusCode: 200,
 		Message:    "Successfully updated category",
 		Data: dto.UpdateCategoryDataResponse{
-			CategoryID: result.CategoryID,
+			CategoryID: result.ID,
 			Type:       result.Type,
 			UpdatedAt:  result.UpdatedAt,
 		},

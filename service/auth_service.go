@@ -56,13 +56,12 @@ func (a *authService) Authentication() gin.HandlerFunc {
 	}
 }
 
-
 // Admin Authorization
 func (a *authService) AdminAuthorization() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		user := ctx.MustGet("userData").(entity.User)
 
-		acc, err := a.userRepo.GetUserById(user.UserID)
+		acc, err := a.userRepo.GetUserById(user.ID)
 		if err != nil {
 			ctx.AbortWithStatusJSON(err.Status(), err)
 			return

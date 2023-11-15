@@ -66,7 +66,7 @@ func (u *userPG) DeleteUserById(id uint) errs.MessageErr {
 
 	if err := u.db.Delete(user).Error; err != nil {
 		log.Println(err.Error())
-		return errs.NewInternalServerError(fmt.Sprintf("Failed to delete user with id %d", user.UserID))
+		return errs.NewInternalServerError(fmt.Sprintf("Failed to delete user with id %d", user.ID))
 	}
 
 	return nil

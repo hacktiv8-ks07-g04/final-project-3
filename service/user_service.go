@@ -51,7 +51,7 @@ func (u *userService) CreateNewUser(payload *dto.RegisterRequest) (*dto.Register
 		StatusCode: 200,
 		Message:    "Successfully registered new user",
 		Data: dto.UserDataResponse{
-			UserID:    user.UserID,
+			UserID:    user.ID,
 			FullName:  user.FullName,
 			Email:     user.Email,
 			CreatedAt: user.CreatedAt,
@@ -118,7 +118,7 @@ func (u *userService) UpdateUser(payload dto.UpdateUserRequest) (*dto.UpdateUser
 		StatusCode: http.StatusOK,
 		Message:    "successfully updated user",
 		Data: dto.UpdateUserDataResponse{
-			UserID:    user.UserID,
+			UserID:    user.ID,
 			FullName:  user.FullName,
 			Email:     user.Email,
 			UpdatedAt: user.UpdatedAt,
