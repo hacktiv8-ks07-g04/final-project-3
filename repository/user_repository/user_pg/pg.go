@@ -50,7 +50,7 @@ func (u *userPG) UpdateUser(user entity.User) errs.MessageErr {
 func (u *userPG) GetUserById(id uint) (*entity.User, errs.MessageErr) {
 	var user entity.User
 
-	if err := u.db.First(&user, "user_id = ?", id).Error; err != nil {
+	if err := u.db.First(&user, "id = ?", id).Error; err != nil {
 		return nil, errs.NewNotFoundError(fmt.Sprintf("User with id %d is not found", id))
 	}
 

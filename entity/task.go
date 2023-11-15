@@ -25,7 +25,7 @@ type Task struct {
 
 func (t *Task) BeforeCreate(ctx *gorm.DB) error {
 	var count int64
-	if err := ctx.Model(&Category{}).Where("category_id = ?", t.CategoryID).Count(&count).Error; err != nil {
+	if err := ctx.Model(&Category{}).Where("id = ?", t.CategoryID).Count(&count).Error; err != nil {
 		return err
 	}
 
