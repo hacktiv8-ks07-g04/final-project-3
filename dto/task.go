@@ -25,9 +25,9 @@ type UserTask struct {
 }
 
 type NewTaskRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	CategoryID  uint   `json:"category_id"`
+	Title       string `json:"title" valid:"required~title is required, type(string)"`
+	Description string `json:"description" valid:"required~description is required, type(string)"`
+	CategoryID  uint   `json:"category_id" valid:"required~category_id is required, type(uint)"`
 }
 
 type NewTaskResponse struct {
@@ -53,8 +53,8 @@ type TaskListResponse struct {
 }
 
 type UpdateDetailTaskRequest struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Title       string `json:"title" valid:"required~title is required, type(string)"`
+	Description string `json:"description" valid:"required~description is required, type(string)"`
 }
 
 type UpdateDetailTaskData struct {
@@ -71,4 +71,12 @@ type UpdateTaskDetailResponse struct {
 	StatusCode int                  `json:"status"`
 	Message    string               `json:"message"`
 	Data       UpdateDetailTaskData `json:"data"`
+}
+
+type UpdateTaskStatusRequest struct {
+	Status bool `json:"status" valid:"required~status is required, type(boolean)"`
+}
+
+type UpdateTaskCategoryRequest struct {
+	CategoryID uint `json:"category_id" valid:"required~category_id is required, type(uint)"`
 }
