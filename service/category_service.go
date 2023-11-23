@@ -41,7 +41,7 @@ func (c *categoryService) CreateCategory(payload *dto.NewCategoryRequest) (*dto.
 	}
 
 	response := dto.NewCategoryResponse{
-		StatusCode: 200,
+		StatusCode: http.StatusOK,
 		Message:    "Successfully created new category",
 		Data: dto.NewCategoryDataResponse{
 			CategoryID: category.ID,
@@ -131,7 +131,7 @@ func (c *categoryService) DeleteCategory(categoryID uint) (*dto.DeleteCategoryRe
 	}
 
 	response := dto.DeleteCategoryResponse{
-		StatusCode: 200,
+		StatusCode: http.StatusOK,
 		Message:    "Successfully deleted category",
 	}
 
