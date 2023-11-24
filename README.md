@@ -5,7 +5,7 @@ Deployment link:
 > https://final-project-3-production-efec.up.railway.app/
 
 User admin:
-- username: admin
+- email: admin@gmail.com
 - password: admin123
 
 ### Thank You
