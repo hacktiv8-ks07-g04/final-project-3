@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/hacktiv8-ks07-g04/final-project-3/infra/config"
 	"github.com/hacktiv8-ks07-g04/final-project-3/pkg/errs"
 	"golang.org/x/crypto/bcrypt"
