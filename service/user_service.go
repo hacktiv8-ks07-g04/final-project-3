@@ -52,10 +52,7 @@ func (u *userService) CreateNewUser(payload *dto.RegisterRequest) (*dto.Register
 	}
 
 	response := dto.RegisterResponse{
-		// ISSUE: StatusCode is 200 here, but the handler (userHandler.go:37) returns
-		// 201 Created. The JSON body says 200 while the actual HTTP status is 201 —
-		// a mismatch between body and header.
-		StatusCode: 200,
+		StatusCode: http.StatusCreated,
 		Message:    "Successfully registered new user",
 		Data: dto.UserDataResponse{
 			UserID:    user.ID,

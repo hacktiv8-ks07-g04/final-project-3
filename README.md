@@ -119,7 +119,7 @@ Response:
 
 ```json
 {
-  "status": 200,
+  "status": 201,
   "message": "Successfully registered new user",
   "data": {
     "id": 1,
@@ -150,6 +150,30 @@ Response:
 }
 ```
 
+### Update Account
+
+```bash
+curl -X PUT http://localhost:8080/users/update-account \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"full_name": "John Smith", "email": "john@example.com"}'
+```
+
+Response:
+
+```json
+{
+  "status": 200,
+  "message": "successfully updated user",
+  "data": {
+    "id": 1,
+    "full_name": "John Smith",
+    "email": "john@example.com",
+    "updated_at": "2026-09-08T12:00:00Z"
+  }
+}
+```
+
 ### Create a Category (admin only)
 
 ```bash
@@ -170,6 +194,81 @@ Response:
     "type": "very-urgent",
     "created_at": "2026-09-08T12:00:00Z"
   }
+}
+```
+
+### Get All Categories
+
+```bash
+curl http://localhost:8080/categories \
+  -H "Authorization: Bearer <token>"
+```
+
+Response:
+
+```json
+{
+  "status": 200,
+  "message": "Successfully get all categories",
+  "data": [
+    {
+      "id": 1,
+      "type": "very-urgent",
+      "created_at": "2026-09-08T12:00:00Z",
+      "updated_at": "2026-09-08T12:00:00Z",
+      "Tasks": [
+        {
+          "id": 1,
+          "title": "My Task",
+          "status": false,
+          "description": "Do something",
+          "user_id": 1,
+          "category_id": 1,
+          "created_at": "2026-09-08T12:00:00Z",
+          "updated_at": "2026-09-08T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Update a Category (admin only)
+
+```bash
+curl -X PATCH http://localhost:8080/categories/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <admin_token>" \
+  -d '{"type": "medium"}'
+```
+
+Response:
+
+```json
+{
+  "status": 200,
+  "message": "Successfully updated category",
+  "data": {
+    "id": 1,
+    "type": "medium",
+    "updated_at": "2026-09-08T12:00:00Z"
+  }
+}
+```
+
+### Delete a Category (admin only)
+
+```bash
+curl -X DELETE http://localhost:8080/categories/1 \
+  -H "Authorization: Bearer <admin_token>"
+```
+
+Response:
+
+```json
+{
+  "status": 200,
+  "message": "Successfully deleted category"
 }
 ```
 
@@ -232,6 +331,33 @@ Response:
 }
 ```
 
+### Update Task
+
+```bash
+curl -X PUT http://localhost:8080/tasks/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"title": "My Updated Task", "description": "Do something else"}'
+```
+
+Response:
+
+```json
+{
+  "status": 200,
+  "message": "Success update task title and description field",
+  "data": {
+    "id": 1,
+    "title": "My Updated Task",
+    "description": "Do something else",
+    "status": false,
+    "user_id": 1,
+    "category_id": 1,
+    "updated_at": "2026-09-08T12:00:00Z"
+  }
+}
+```
+
 ### Update Task Status
 
 ```bash
@@ -272,6 +398,33 @@ Response:
 {
   "status": 200,
   "message": "Task has been successfully deleted"
+}
+```
+
+### Update Task Category
+
+```bash
+curl -X PATCH http://localhost:8080/tasks/update-category/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \
+  -d '{"category_id": 2}'
+```
+
+Response:
+
+```json
+{
+  "status": 200,
+  "message": "Success update task category field",
+  "data": {
+    "id": 1,
+    "title": "My Task",
+    "description": "Do something",
+    "status": false,
+    "user_id": 1,
+    "category_id": 2,
+    "updated_at": "2026-09-08T12:00:00Z"
+  }
 }
 ```
 
