@@ -14,6 +14,8 @@ type userPG struct {
 	db *gorm.DB
 }
 
+// ISSUE: Constructor naming is inconsistent — UserInit here and CategoryInit in the
+// category repo, but NewTaskPg in the task repo. Go convention: NewXxx().
 func UserInit(db *gorm.DB) user_repository.Repository {
 	return &userPG{
 		db: db,
@@ -32,6 +34,9 @@ func (u *userPG) GetUserByEmail(email string) (*entity.User, errs.MessageErr) {
 	var user entity.User
 
 	if err := u.db.First(&user, "email = ?", email).Error; err != nil {
+		// ISSUE: Error message reveals whether a specific email exists in the system
+		// (user enumeration). The login path masks it with a generic "invalid
+		// email/password", but this message should be generic at the source too.
 		return nil, errs.NewNotFoundError(fmt.Sprintf("User with email %s is not found", email))
 	}
 

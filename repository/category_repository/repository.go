@@ -10,5 +10,7 @@ type Repository interface {
 	DeleteCategory(id uint) errs.MessageErr
 	UpdateCategory(id uint, category *entity.Category) (*entity.Category, errs.MessageErr)
 	GetCategoryWithTask() ([]entity.Category, errs.MessageErr)
+	// ISSUE: GetCategoryById is exposed on the interface but only used internally
+	// (by DeleteCategory). Not called from any service/handler. Consider unexporting.
 	GetCategoryById(id uint) (*entity.Category, errs.MessageErr)
 }

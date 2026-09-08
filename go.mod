@@ -3,10 +3,16 @@ module github.com/hacktiv8-ks07-g04/final-project-3
 go 1.21
 
 require (
+	// ISSUE: govalidator is redundant — Gin already pulls in go-playground/validator/v10
+	// (see lines below), which is better maintained. Consider dropping govalidator.
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 	github.com/gin-gonic/gin v1.9.1
+	// ISSUE: golang-jwt/jwt v3 is deprecated (`+incompatible` = pre-modules package).
+	// Use github.com/golang-jwt/jwt/v5. Also note tokens are issued with no exp claim
+	// (see entity/user.go tokenClaim) — v5's RegisteredClaims handles expiry cleanly.
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.5.1
+	// ISSUE: x/crypto v0.14.0 is outdated; later releases contain security patches.
 	golang.org/x/crypto v0.14.0
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5

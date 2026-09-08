@@ -40,6 +40,9 @@ func (c *categoryService) CreateCategory(payload *dto.NewCategoryRequest) (*dto.
 		return nil, err
 	}
 
+	// ISSUE: StatusCode is 200 OK for a create operation. REST convention would be
+	// 201 Created. This also creates a mismatch where the JSON body says 200 but
+	// the handler's actual HTTP status may differ.
 	response := dto.NewCategoryResponse{
 		StatusCode: http.StatusOK,
 		Message:    "Successfully created new category",

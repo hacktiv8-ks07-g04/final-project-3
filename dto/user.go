@@ -11,6 +11,7 @@ type User struct {
 }
 
 type RegisterRequest struct {
+	// ISSUE: FullName has no maximum-length validation, allowing arbitrarily long strings.
 	FullName string `json:"full_name" valid:"required~full name is required, type(string)"`
 	Password string `json:"password" valid:"required~password is required,minstringlength(6)~password must be at least 6 characters"`
 	Email    string `json:"email" valid:"email~email is not valid, required~email is required, type(string)"`
@@ -30,6 +31,8 @@ type RegisterResponse struct {
 }
 
 type LoginRequest struct {
+	// ISSUE (COPY-PASTE BUG): The Email validation message says "full name is required"
+	// — it should say "email is required".
 	Email    string `json:"email" valid:"required~full name is required, type(string)"`
 	Password string `json:"password" valid:"required~password is required, type(string)"`
 }
@@ -45,6 +48,7 @@ type TokenResponse struct {
 }
 
 type UpdateUserRequest struct {
+	// ISSUE: No min/max length validation on FullName (register also lacks max length).
 	FullName string `json:"full_name" valid:"required~full name is required, type(string)"`
 	Email    string `json:"email" valid:"email~email is not valid, required~email is required, type(string)"`
 }
@@ -62,6 +66,9 @@ type UpdateUserDataResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// ISSUE: DeleteUserResponse uses field name `Status` while all other response DTOs
+// use `StatusCode` (see RegisterResponse/LoginResponse/UpdateUserResponse above).
+// Inconsistent — pick one and use everywhere.
 type DeleteUserResponse struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`

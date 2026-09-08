@@ -18,6 +18,8 @@ func StartApp() {
 
 	database.InitializedDatabase()
 
+	// ISSUE: PORT is read from env with no validation or default fallback. If unset,
+	// `r.Run(":")` will be called with an empty string.
 	var port = config.Server().Port
 
 	db := database.GetDbInstance()
@@ -34,8 +36,16 @@ func StartApp() {
 	categoryHandler := category_handler.NewCategoryHandler(categoryService)
 	taskHandler := task_handler.NewTaskHandler(taskService)
 
+	// ISSUE: authService is wired directly against the user repository, bypassing the
+	// UserService layer. Also, the auth middleware is defined in the service package
+	// (auth_service.go), coupling the business layer to the HTTP framework. It should
+	// live in a dedicated middleware package.
 	authService := service.NewAuthService(userRepo)
 
+	// ISSUE: gin.Default() has no CORS middleware configured. Cross-origin browser
+	// requests will be blocked (or, without CORS, arbitrary origins are unrestricted)
+	// — either way CORS should be explicitly configured.
+	// ISSUE: No rate-limiting on the login endpoint, allowing brute-force attempts.
 	r := gin.Default()
 	userRoute := r.Group("/users")
 	{
@@ -43,6 +53,11 @@ func StartApp() {
 		userRoute.POST("/register", userHandler.RegisterNewUser)
 		userRoute.POST("/login", userHandler.LoginUser)
 
+		// ISSUE: auth middleware registered AFTER the register/login routes. In Gin,
+		// middleware within a group only applies to routes registered after the
+		// Use() call. It technically works but is fragile/confusing — a reader might
+		// expect the middleware to protect all routes in the group. Move Use() to the
+		// top for clarity.
 		userRoute.Use(authService.Authentication())
 
 		userRoute.PUT("/update-account", userHandler.UpdateUser)
@@ -71,5 +86,10 @@ func StartApp() {
 		taskRoute.DELETE("/:taskId", taskHandler.DeleteTaskById)
 	}
 
+	// ISSUE: r.Run() is a blocking call with no graceful shutdown. When the app is
+	// deployed and receives SIGTERM/SIGINT, the server is killed abruptly without
+	// closing the DB connection or finishing in-flight requests. Should use
+	// http.Server with server.Shutdown(ctx) on signal.
+	// ISSUE: The error returned by r.Run() (e.g. port already in use) is ignored.
 	r.Run(":" + port)
 }

@@ -18,6 +18,10 @@ func NewUserHandler(userService service.UserService) *userHandler {
 	return &userHandler{userService: userService}
 }
 
+// ISSUE: Receiver naming is inconsistent — this file uses both `h` (RegisterNewUser)
+// and `uh` (LoginUser, UpdateUser, DeleteUser) for the same *userHandler type.
+// Go convention: pick one receiver name and use it consistently throughout.
+
 func (h *userHandler) RegisterNewUser(ctx *gin.Context) {
 	var newRequest dto.RegisterRequest
 
@@ -30,6 +34,8 @@ func (h *userHandler) RegisterNewUser(ctx *gin.Context) {
 
 	response, err := h.userService.CreateNewUser(&newRequest)
 	if err != nil {
+		// ISSUE: Wraps the original error into a generic InternalServerError,
+		// discarding the specific error type/status from the service layer.
 		ctx.JSON(http.StatusInternalServerError, errs.NewInternalServerError(err.Error()))
 		return
 	}
@@ -79,6 +85,9 @@ func (uh *userHandler) UpdateUser(ctx *gin.Context) {
 
 // delete user
 func (uh *userHandler) DeleteUser(ctx *gin.Context) {
+	// ISSUE: ctx.MustGet + unchecked type assertion .(entity.User). If "userData"
+	// is missing from context or stored as a different type, this panics and crashes
+	// the server. Use ctx.Get() with an ok check.
 	user := ctx.MustGet("userData").(entity.User)
 
 	response, err := uh.userService.DeleteUser(user.ID)
@@ -87,5 +96,7 @@ func (uh *userHandler) DeleteUser(ctx *gin.Context) {
 		return
 	}
 
+	// ISSUE: Uses response.Status (DeleteUserResponse uses `Status` field) while
+	// other handlers use response.StatusCode — inconsistent field naming across DTOs.
 	ctx.JSON(response.Status, response)
 }

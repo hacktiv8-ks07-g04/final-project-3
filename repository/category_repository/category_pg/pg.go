@@ -11,6 +11,8 @@ type categoryPG struct {
 	db *gorm.DB
 }
 
+// ISSUE: Constructor naming is inconsistent — CategoryInit here vs NewTaskPg in the
+// task repo and UserInit in the user repo. Go convention: NewXxx().
 func CategoryInit(db *gorm.DB) category_repository.Repository {
 	return &categoryPG{
 		db: db,
@@ -36,11 +38,15 @@ func (c *categoryPG) GetCategoryWithTask() ([]entity.Category, errs.MessageErr) 
 	return categories, nil
 }
 
-// get category by id
+// ISSUE: GetCategoryById is exposed on the public Repository interface but is never
+// called by any service/handler directly — it's only used internally by DeleteCategory.
+// Also returns InternalServerError (500) when the category is not found; should be
+// NotFoundError (404). Same problem in UpdateCategory below (line ~54).
 func (c *categoryPG) GetCategoryById(id uint) (*entity.Category, errs.MessageErr) {
 	var category entity.Category
 
 	if err := c.db.First(&category, id).Error; err != nil {
+		// ISSUE: record not found -> 500. Should be errs.NewNotFoundError (404).
 		return nil, errs.NewInternalServerError(err.Error())
 	}
 
@@ -52,6 +58,7 @@ func (c *categoryPG) UpdateCategory(id uint, category *entity.Category) (*entity
 	var categoryData entity.Category
 
 	if err := c.db.First(&categoryData, id).Error; err != nil {
+		// ISSUE: record not found -> 500. Should be errs.NewNotFoundError (404).
 		return nil, errs.NewInternalServerError(err.Error())
 	}
 
@@ -66,6 +73,7 @@ func (c *categoryPG) UpdateCategory(id uint, category *entity.Category) (*entity
 
 // delete category
 func (c *categoryPG) DeleteCategory(id uint) errs.MessageErr {
+	// ISSUE: "not found" error surfaces as 500 (via GetCategoryById) instead of 404.
 	category, err := c.GetCategoryById(id)
 	if err != nil {
 		return err

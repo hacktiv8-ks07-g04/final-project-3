@@ -23,6 +23,12 @@ type Task struct {
 	UpdatedAt time.Time
 }
 
+// ISSUE: The BeforeCreate hook directly queries the database via GORM's ctx
+// to validate that a CategoryID exists. This embeds data-access logic directly
+// in the entity (violating separation of concerns). Category existence should be
+// validated in the service layer before calling the repository, not inside the entity.
+// Also returns a 500 InternalServerError for a "category not found" scenario —
+// semantically this should be a 404 NotFoundError.
 func (t *Task) BeforeCreate(ctx *gorm.DB) error {
 	var count int64
 	if err := ctx.Model(&Category{}).Where("id = ?", t.CategoryID).Count(&count).Error; err != nil {

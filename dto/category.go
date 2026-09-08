@@ -13,6 +13,7 @@ type Category struct {
 }
 
 type NewCategoryRequest struct {
+	// ISSUE: No max-length validation on Type — arbitrarily long strings allowed.
 	Type string `json:"type" valid:"required~type is required, type(string)"`
 }
 

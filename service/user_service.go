@@ -10,6 +10,10 @@ import (
 	"github.com/hacktiv8-ks07-g04/final-project-3/repository/user_repository"
 )
 
+// ISSUE: The UserService interface is defined in the service package (where it is
+// implemented). Go idiom: define interfaces where they are consumed (the handler
+// package) and return concrete structs from constructors ("accept interfaces,
+// return structs"). Same applies to TaskService and CategoryService.
 type UserService interface {
 	CreateNewUser(payload *dto.RegisterRequest) (*dto.RegisterResponse, errs.MessageErr)
 	LoginUser(newUserRequest dto.LoginRequest) (*dto.LoginResponse, errs.MessageErr)
@@ -48,6 +52,9 @@ func (u *userService) CreateNewUser(payload *dto.RegisterRequest) (*dto.Register
 	}
 
 	response := dto.RegisterResponse{
+		// ISSUE: StatusCode is 200 here, but the handler (userHandler.go:37) returns
+		// 201 Created. The JSON body says 200 while the actual HTTP status is 201 —
+		// a mismatch between body and header.
 		StatusCode: 200,
 		Message:    "Successfully registered new user",
 		Data: dto.UserDataResponse{
@@ -101,6 +108,11 @@ func (u *userService) UpdateUser(payload dto.UpdateUserRequest) (*dto.UpdateUser
 		return nil, err
 	}
 
+	// ISSUE: This looks up the user by the *body's* email rather than the
+	// authenticated user's ID from the JWT token. Any authenticated user could
+	// update a DIFFERENT user's data by supplying that user's email. The
+	// authenticated user ID should be passed from the handler (via the JWT) and
+	// used as the target of the update (authorization bypass / IDOR).
 	user, err := u.userRepo.GetUserByEmail(payload.Email)
 	if err != nil {
 		return nil, err

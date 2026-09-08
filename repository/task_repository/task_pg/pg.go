@@ -33,7 +33,10 @@ func (t *taskPg) GetTaskWithUser() ([]entity.Task, errs.MessageErr) {
 	return task, nil
 }
 
-// get task id
+// ISSUE: GetTaskById returns InternalServerError (500) when a task is not found.
+// It should return NotFoundError (404) for that case. It's also exposed on the
+// public Repository interface but never called by any service/handler directly —
+// it's only used internally by the update/delete methods, so it shouldn't be exported.
 func (t *taskPg) GetTaskById(id uint) (*entity.Task, errs.MessageErr) {
 	var task entity.Task
 
@@ -44,6 +47,11 @@ func (t *taskPg) GetTaskById(id uint) (*entity.Task, errs.MessageErr) {
 	return &task, nil
 }
 
+// ISSUE (DUPLICATION): Every update/delete method below repeats the same pattern:
+// (1) GetTaskById, (2) check task.UserID != userId, (3) return UnauthorizedError.
+// This ownership check is also business logic that belongs in the SERVICE or a
+// middleware layer, not in the data-access (repository) layer. Extract to a shared
+// helper (e.g. getOwnedTask) and move authorization up the stack.
 func (t *taskPg) UpdateTaskTitleAndDescription(id uint, userId uint, taskPayload *entity.Task) (*entity.Task, errs.MessageErr) {
 	task, err := t.GetTaskById(id)
 	if err != nil {
@@ -51,6 +59,8 @@ func (t *taskPg) UpdateTaskTitleAndDescription(id uint, userId uint, taskPayload
 	}
 
 	if task.UserID != userId {
+		// ISSUE: Authorization in repository layer (should be in service/middleware).
+		// Also the task-not-found case above returns 500 from GetTaskById instead of 404.
 		return nil, errs.NewUnauthorizedError("You are not authorized to update this task")
 	}
 

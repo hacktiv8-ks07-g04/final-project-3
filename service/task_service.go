@@ -10,6 +10,10 @@ import (
 	"github.com/hacktiv8-ks07-g04/final-project-3/repository/task_repository"
 )
 
+// ISSUE: DeleteTaskById returns the WRONG DTO type — *dto.DeleteCategoryResponse —
+// instead of the correct dto.DeleteTaskResponse (which is defined but never used).
+// Copy-paste error from the category service. This also flows through the interface
+// and handler, so the API type is semantically wrong.
 type TaskService interface {
 	CreateNewTask(userId uint, payload *dto.NewTaskRequest) (*dto.NewTaskDataResponse, errs.MessageErr)
 	GetTaskWithUser() (*dto.TaskListResponse, errs.MessageErr)
@@ -96,6 +100,11 @@ func (t *taskService) GetTaskWithUser() (*dto.TaskListResponse, errs.MessageErr)
 
 	return &response, nil
 }
+
+// ISSUE (DUPLICATION): UpdateTaskById, UpdateTaskStatus, and UpdateTaskCategory all
+// build the exact same dto.UpdateTaskDetailResponse / dto.UpdateDetailTaskData from
+// the same fields. This ~15-line block is copy-pasted three times here. Extract into
+// a shared helper (e.g. mapTaskToUpdateDetail(task *entity.Task, msg string)).
 
 // update task title and description
 func (t *taskService) UpdateTaskById(id uint, userId uint, payload *dto.UpdateDetailTaskRequest) (*dto.UpdateTaskDetailResponse, errs.MessageErr) {
@@ -201,6 +210,8 @@ func (t *taskService) DeleteTaskById(id uint, userId uint) (*dto.DeleteCategoryR
 		return nil, err
 	}
 
+	// ISSUE: Uses dto.DeleteCategoryResponse (wrong name/type) instead of the
+	// defined-but-unused dto.DeleteTaskResponse. Copy-paste from category service.
 	response := dto.DeleteCategoryResponse{
 		StatusCode: http.StatusOK,
 		Message:    "Task has been successfully deleted",

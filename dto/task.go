@@ -25,6 +25,7 @@ type UserTask struct {
 }
 
 type NewTaskRequest struct {
+	// ISSUE: Title and Description have no max-length validation; both are free-form.
 	Title       string `json:"title" valid:"required~title is required, type(string)"`
 	Description string `json:"description" valid:"required~description is required, type(string)"`
 	CategoryID  uint   `json:"category_id" valid:"required~category_id is required, type(uint)"`
@@ -40,6 +41,8 @@ type NewTaskResponse struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
+// ISSUE: NewTaskDataResponse uses field name `Status` while TaskListResponse and
+// UpdateTaskDetailResponse use `StatusCode`. Inconsistent — pick one and use everywhere.
 type NewTaskDataResponse struct {
 	Status  int             `json:"status"`
 	Message string          `json:"message"`
@@ -81,6 +84,9 @@ type UpdateTaskCategoryRequest struct {
 	CategoryID uint `json:"category_id" valid:"required~category_id is required, type(uint)"`
 }
 
+// ISSUE: DeleteTaskResponse is defined but NEVER used — the task delete endpoint
+// actually returns dto.DeleteCategoryResponse (see service/task_service.go),
+// which is semantically wrong.
 type DeleteTaskResponse struct {
 	StatusCode int    `json:"status"`
 	Message    string `json:"message"`
